@@ -1,6 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { data } from '../lib/data';
+
+// Splits "MATEO CAÑIBANO DOMÍNGUEZ" → ["MATEO", "CAÑIBANO", "DOMÍNGUEZ"]
+const nameParts = data.personal.name.split(' ');
+const firstName   = nameParts[0];                  // siempre visible
+const lastName1   = nameParts[1] ?? '';            // visible desde sm
+const lastName2   = nameParts.slice(2).join(' ');  // visible desde lg
 import GradientText from '../components/GradientText';
 
 const textVariants = {
@@ -20,7 +26,6 @@ const childVariants = {
 };
 
 const HeroSection = () => {
-    const fullName = data.personal.name;
     const role = data.personal.role;
     const tagline = data.personal.tagline;
 
@@ -64,19 +69,26 @@ const HeroSection = () => {
                         </span>
                     </motion.div>
 
-                    {/* Name */}
+                    {/* Name — responsive split to prevent 3-line overflow on mobile */}
                     <motion.h1
-                        className="text-5xl sm:text-7xl md:text-8xl font-extrabold text-foreground mb-6 leading-tight"
+                        className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-foreground mb-6 leading-tight"
                         variants={childVariants}
                     >
-                        Hola, soy{' '}
+                        <span className="block text-2xl sm:text-3xl md:text-4xl font-mono text-muted-foreground/60 mb-1 tracking-widest">
+                            Hola, soy
+                        </span>
                         <GradientText
                             colors={["#10b981", "#7c3aed", "#34d399", "#a78bfa", "#10b981"]}
                             animationSpeed={5}
                             showBorder={false}
-                            className="inline-block"
+                            className="inline"
                         >
-                            {fullName}
+                            {/* Mobile: solo primer nombre */}
+                            <span className="sm:hidden">{firstName}</span>
+                            {/* Tablet: nombre + primer apellido */}
+                            <span className="hidden sm:inline lg:hidden">{firstName} {lastName1}</span>
+                            {/* Desktop: nombre completo */}
+                            <span className="hidden lg:inline">{firstName} {lastName1}{lastName2 ? ` ${lastName2}` : ''}</span>
                         </GradientText>
                         <span className="text-primary">.</span>
                     </motion.h1>

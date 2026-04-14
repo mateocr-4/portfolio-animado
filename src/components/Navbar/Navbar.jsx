@@ -65,13 +65,22 @@ export const Navbar = () => {
                         </ul>
                     </nav>
 
-                    {/* Botón de Menú Móvil */}
+                    {/* Animated SVG Hamburger / Close button */}
                     <button
                         onClick={toggleMenu}
-                        className="md:hidden text-primary hover:text-primary/80 text-3xl transition-colors z-50"
-                        aria-label="Abrir menú de navegación"
+                        className="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-primary/10 transition-colors z-50 group"
+                        aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú de navegación'}
+                        aria-expanded={isMenuOpen}
                     >
-                        ☰
+                        <span className={`block w-5 h-0.5 bg-primary rounded transition-all duration-300 ${
+                            isMenuOpen ? 'rotate-45 translate-y-1.5' : ''
+                        }`} />
+                        <span className={`block w-5 h-0.5 bg-primary rounded transition-all duration-300 mt-1 ${
+                            isMenuOpen ? 'opacity-0 scale-x-0' : ''
+                        }`} />
+                        <span className={`block w-5 h-0.5 bg-primary rounded transition-all duration-300 mt-1 ${
+                            isMenuOpen ? '-rotate-45 -translate-y-2.5' : ''
+                        }`} />
                     </button>
                 </div>
             </motion.header>

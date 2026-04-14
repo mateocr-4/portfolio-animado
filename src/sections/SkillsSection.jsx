@@ -3,6 +3,60 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { data } from '../lib/data';
 import { GlassIcon } from '../components/GlassIcon';
 
+// ─── Tech Icon Map ──────────────────────────────────────────────────────────
+import {
+    SiReact, SiNextdotjs, SiTailwindcss, SiTypescript, SiFramer,
+    SiNodedotjs, SiExpress, SiMongodb, SiPostgresql, SiSupabase,
+    SiPython, SiDocker, SiGithub, SiFigma, SiWordpress,
+    SiShopify, SiGoogleanalytics, SiGoogleads, SiHubspot,
+    SiAmazonwebservices, SiVite, SiJavascript, SiHtml5,
+    SiCss3, SiMarkdown, SiNotionSo,
+} from 'react-icons/si';
+import { FaSearch, FaCode, FaChartBar, FaDatabase, FaBolt, FaChartLine, FaStar } from 'react-icons/fa';
+
+/**
+ * Maps a tech/tool name (case-insensitive substring match) to its brand icon.
+ * Falls back to a generic code icon.
+ */
+const ICON_MAP = [
+    { match: /react/i,          Icon: SiReact,           color: '#61DAFB' },
+    { match: /next\.?js/i,      Icon: SiNextdotjs,       color: '#ffffff' },
+    { match: /tailwind/i,       Icon: SiTailwindcss,     color: '#06B6D4' },
+    { match: /typescript/i,     Icon: SiTypescript,      color: '#3178c6' },
+    { match: /framer/i,         Icon: SiFramer,          color: '#BB4B96' },
+    { match: /node/i,           Icon: SiNodedotjs,       color: '#339933' },
+    { match: /express/i,        Icon: SiExpress,         color: '#ffffff' },
+    { match: /mongo/i,          Icon: SiMongodb,         color: '#47A248' },
+    { match: /sql/i,            Icon: SiPostgresql,      color: '#4169E1' },
+    { match: /supabase/i,       Icon: SiSupabase,        color: '#3ECF8E' },
+    { match: /python/i,         Icon: SiPython,          color: '#3572A5' },
+    { match: /docker/i,         Icon: SiDocker,          color: '#2496ED' },
+    { match: /github?|git/i,    Icon: SiGithub,          color: '#ffffff' },
+    { match: /figma/i,          Icon: SiFigma,           color: '#F24E1E' },
+    { match: /wordpress/i,      Icon: SiWordpress,       color: '#21759B' },
+    { match: /shopify/i,        Icon: SiShopify,         color: '#96BF48' },
+    { match: /google|ga4|gtm|looker|search console|ahrefs|semrush|screaming frog/i,
+                                Icon: SiGoogleanalytics, color: '#E37400' },
+    { match: /ads/i,            Icon: SiGoogleads,       color: '#4285F4' },
+    { match: /hubspot/i,        Icon: SiHubspot,         color: '#FF7A59' },
+    { match: /aws/i,            Icon: SiAmazonwebservices, color: '#FF9900' },
+    { match: /vite/i,           Icon: SiVite,            color: '#646CFF' },
+    { match: /javascript|js/i,  Icon: SiJavascript,      color: '#F7DF1E' },
+    { match: /html/i,           Icon: SiHtml5,           color: '#E34F26' },
+    { match: /css/i,            Icon: SiCss3,            color: '#1572B6' },
+    { match: /markdown/i,       Icon: SiMarkdown,        color: '#ffffff' },
+    { match: /notion/i,         Icon: SiNotionSo,        color: '#ffffff' },
+    { match: /seo/i,            Icon: FaSearch,          color: '#10b981' },
+    { match: /excel|power quer|dashboard|chart|analytic|data/i,
+                                Icon: FaChartBar,         color: '#10b981' },
+    { match: /a\/b testing|cro/i, Icon: FaBolt,          color: '#a78bfa' },
+];
+
+function getTechIcon(name) {
+    const found = ICON_MAP.find(({ match }) => match.test(name));
+    return found ? { Icon: found.Icon, color: found.color } : { Icon: FaCode, color: '#6b7280' };
+}
+
 const areas = Object.keys(data.competencies);
 
 // Collect all unique tools across all competencies for the synced stack
@@ -170,7 +224,7 @@ const SkillsSection = () => {
                     </motion.div>
                 </AnimatePresence>
 
-                {/* ───── Synced Stack (reflejo técnico de competencias) ───── */}
+                {/* ───── Synced Stack — Icon Badges Glassmorphism ───── */}
                 <motion.div
                     className="p-6 rounded-xl glass-deep"
                     initial={{ opacity: 0, y: 20 }}
@@ -178,25 +232,36 @@ const SkillsSection = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                    <p className="text-xs font-mono text-primary/60 uppercase tracking-widest mb-4">
+                    <p className="text-xs font-mono text-primary/60 uppercase tracking-widest mb-5">
                         Stack Técnico Completo — sincronizado con competencias
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                        {syncedStack.map((tool, i) => (
-                            <motion.span
-                                key={tool}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.03 }}
-                                className="text-xs font-mono px-3 py-1.5 rounded-lg cursor-default
-                                           bg-white/3 text-muted-foreground border border-white/5
-                                           hover:bg-primary/10 hover:text-primary hover:border-primary/20
-                                           transition-all duration-300"
-                            >
-                                {tool}
-                            </motion.span>
-                        ))}
+                    <div className="flex flex-wrap gap-2.5">
+                        {syncedStack.map((tool, i) => {
+                            const { Icon, color } = getTechIcon(tool);
+                            return (
+                                <motion.div
+                                    key={tool}
+                                    initial={{ opacity: 0, scale: 0.85 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.025 }}
+                                    whileHover={{ y: -2, scale: 1.04 }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-default
+                                               bg-white/4 border border-white/8 backdrop-blur-sm
+                                               hover:bg-white/8 hover:border-primary/25
+                                               transition-all duration-250 group"
+                                >
+                                    <Icon
+                                        size={14}
+                                        style={{ color }}
+                                        className="shrink-0 opacity-80 group-hover:opacity-100 transition-opacity"
+                                    />
+                                    <span className="text-xs font-mono text-muted-foreground group-hover:text-foreground transition-colors">
+                                        {tool}
+                                    </span>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </motion.div>
 

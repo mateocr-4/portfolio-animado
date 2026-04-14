@@ -29,19 +29,19 @@ const AnalyticsSection = () => {
 
     const MetricCard = ({ title, value, change, gradient, index }) => (
         <motion.div
-            className={`relative p-5 rounded-xl border border-primary/10 shadow-md cursor-default group overflow-hidden
-                         bg-gradient-to-br ${gradient} backdrop-blur-sm`}
+            className={`relative p-5 rounded-xl border border-primary/10 shadow-md cursor-default group overflow-visible
+                         h-auto bg-gradient-to-br ${gradient} backdrop-blur-sm`}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -4, borderColor: 'rgba(16,185,129,0.25)' }}
         >
-            <p className="text-sm text-muted-foreground mb-2 tracking-wider font-mono uppercase">{title}</p>
-            <div className="flex items-end justify-between">
-                <h3 className="text-3xl font-extrabold text-foreground group-hover:text-primary transition-colors duration-300">{value}</h3>
-                <span className="text-sm font-semibold flex items-center text-emerald-400">
-                    <FaArrowUp className="w-3 h-3 mr-1" />
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 tracking-wider font-mono uppercase leading-snug">{title}</p>
+            <div className="flex flex-wrap items-end justify-between gap-2">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground group-hover:text-primary transition-colors duration-300 leading-none">{value}</h3>
+                <span className="text-xs sm:text-sm font-semibold flex items-center gap-1 text-emerald-400 shrink-0">
+                    <FaArrowUp className="w-3 h-3" />
                     {change}
                 </span>
             </div>
@@ -82,8 +82,8 @@ const AnalyticsSection = () => {
                         Monitoreo de Performance
                     </h3>
 
-                    {/* KPI GRID */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    {/* KPI GRID — 1 col mobile, 2 sm, 4 md+ */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {kpis.map((kpi, i) => (
                             <MetricCard key={kpi.title} {...kpi} index={i} />
                         ))}
