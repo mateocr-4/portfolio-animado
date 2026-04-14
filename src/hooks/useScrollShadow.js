@@ -1,0 +1,17 @@
+import { useEffect, useState } from "react";
+
+export default function useScrollShadow() {
+  const [shadow, setShadow] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) setShadow(true);
+      else setShadow(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return shadow;
+}

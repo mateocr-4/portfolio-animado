@@ -1,0 +1,15 @@
+.logo-loop {
+  display: flex;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+.logo-loop-track {
+  display: flex;
+  animation: loop 20s linear infinite;
+}
+
+@keyframes loop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

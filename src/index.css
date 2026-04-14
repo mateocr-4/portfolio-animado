@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================
+   DESIGN SYSTEM — Tech-Minimalist
+   Emerald accent · Glassmorphism · Grid coherence
+   ========================================== */
+
+:root {
+  /* ── Core ── */
+  --primary: #10b981;             /* Emerald 500 */
+  --primary-rgb: 16, 185, 129;
+  --secondary: #7c3aed;           /* Violet 600 */
+  --secondary-rgb: 124, 58, 237;
+  --accent: #34d399;              /* Emerald 400 */
+  --accent-rgb: 52, 211, 153;
+
+  /* ── Surface system (coherent grays) ── */
+  --surface-0: #06090f;           /* Deepest — body */
+  --surface-1: rgba(12, 17, 28, 0.85); /* Cards level 1 */
+  --surface-2: rgba(17, 24, 39, 0.7);  /* Cards level 2 */
+  --surface-3: rgba(30, 41, 59, 0.5);  /* Hover / elevated */
+
+  /* ── Text ── */
+  --textMain: #e2e8f0;
+  --textoAlt: #f1f5f9;
+
+  /* ── Semantic ── */
+  --background: #06090f;
+  --foreground: #e2e8f0;
+  --card: var(--surface-1);
+  --card-foreground: #e2e8f0;
+  --popover: #0c111c;
+  --popover-foreground: #e2e8f0;
+  --primary-foreground: #020617;
+  --secondary-foreground: #e2e8f0;
+  --muted: var(--surface-2);
+  --muted-foreground: #94a3b8;
+  --accent-foreground: #020617;
+  --destructive: #ef4444;
+  --border: rgba(16, 185, 129, 0.10);
+  --input: rgba(16, 185, 129, 0.06);
+  --ring: rgba(16, 185, 129, 0.25);
+
+  --radius: 0.75rem;
+
+  /* ── Charts ── */
+  --chart-1: #10b981;
+  --chart-2: #7c3aed;
+  --chart-3: #06b6d4;
+  --chart-4: #a78bfa;
+  --chart-5: #34d399;
+
+  /* ── Sidebar ── */
+  --sidebar: #0c111c;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #10b981;
+  --sidebar-primary-foreground: #020617;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: rgba(16, 185, 129, 0.08);
+  --sidebar-ring: rgba(16, 185, 129, 0.25);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==========================================
+   BODY — Deep tech canvas
+   ========================================== */
+
+body {
+  background: var(--surface-0);
+  color: var(--textMain);
+  min-height: 100vh;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Ambient gradient mesh */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 30%, rgba(var(--primary-rgb), 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 65%, rgba(var(--secondary-rgb), 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle dot grid (tech feel) */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(var(--primary-rgb), 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Neon pulse for availability badge */
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(var(--primary-rgb), 0.4), 0 0 12px rgba(var(--primary-rgb), 0.15);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.7), 0 0 24px rgba(var(--primary-rgb), 0.3);
+    opacity: 0.85;
+  }
+}
+
+.neon-pulse-badge {
+  animation: neonPulse 2.5s ease-in-out infinite;
+}
+
+/* Glow pulse for cards */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.15), 0 0 20px rgba(var(--primary-rgb), 0.04);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3), 0 0 35px rgba(var(--primary-rgb), 0.08);
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Floating glow */
+@keyframes floatGlow {
+  0% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.3));
+  }
+  50% {
+    transform: translateY(-8px);
+    filter: drop-shadow(0 0 18px rgba(var(--primary-rgb), 0.5));
+  }
+  100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.3));
+  }
+}
+
+.glow-float {
+  animation: floatGlow 3s ease-in-out infinite;
+}
+
+/* Shimmer heading text */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--accent) 30%,
+    #a78bfa 50%,
+    var(--accent) 70%,
+    var(--primary) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+
+/* ==========================================
+   GLASSMORPHISM — Unified Surface System
+   ========================================== */
+
+@layer utilities {
+
+  /* Level 1 glass — standard cards */
+  .glass {
+    background: var(--surface-1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(var(--primary-rgb), 0.08);
+  }
+
+  /* Level 2 glass — elevated / feature cards */
+  .glass-deep {
+    background: var(--surface-1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+    box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* Glass icon container (3D glassmorphism) */
+  .glass-icon {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(var(--primary-rgb), 0.04));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .glass-icon:hover {
+    border-color: rgba(var(--primary-rgb), 0.35);
+    box-shadow:
+      0 6px 24px rgba(var(--primary-rgb), 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Neon glow border */
+  .neon-border {
+    border: 1px solid rgba(var(--primary-rgb), 0.15);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.04), inset 0 0 15px rgba(var(--primary-rgb), 0.02);
+  }
+
+  .neon-border:hover {
+    border-color: rgba(var(--primary-rgb), 0.35);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.08), inset 0 0 20px rgba(var(--primary-rgb), 0.03);
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

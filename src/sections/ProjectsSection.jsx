@@ -1,0 +1,118 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GitHubProjectCard } from '../components/GitHubProjectCard';
+import { TerminalWidget } from '../components/TerminalWidget';
+import { supabase } from '../lib/supabaseClient';
+
+const ProjectsSection = () => {
+    const [selectedTag, setSelectedTag] = useState("All");
+    const [activeProject, setActiveProject] = useState(null);
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            const { data } = await supabase.from('projects').select('*');
+            if(data) {
+                const sorted = [...data].sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+                setProjects(sorted);
+            }
+        };
+        fetchProjects();
+    }, []);
+
+    const allTags = useMemo(() => {
+        return ["All", ...new Set(projects.flatMap(p => p.hardskills || []))].slice(0, 8);
+    }, [projects]);
+
+    const filteredProjects = useMemo(() => {
+        if (selectedTag === "All") return projects;
+        return projects.filter(p => (p.hardskills || []).includes(selectedTag));
+    }, [selectedTag, projects]);
+
+    return (
+        <section
+            id="proyectos"
+            className="py-24 md:py-32 relative overflow-hidden bg-background"
+            aria-label="Proyectos de Desarrollo y Tech Hub"
+        >
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
+                <motion.div
+                    className="text-center mb-12"
+                    initial={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
+                    whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-shimmer">
+                        Tech-Hub & Proyectos
+                    </h2>
+                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                        Explora la arquitectura técnica y el despliegue de mis trabajos más recientes.
+                        Pasa el cursor sobre los repositorios para analizar el código.
+                    </p>
+                </motion.div>
+
+                {/* Filters */}
+                <div className="flex flex-wrap justify-center gap-3 mb-16">
+                    {allTags.map((tag) => (
+                        <button
+                            key={tag}
+                            onClick={() => setSelectedTag(tag)}
+                            className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300
+                                       ${selectedTag === tag 
+                                        ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(16,185,129,0.4)] border-primary' 
+                                        : 'bg-transparent text-muted-foreground border border-primary/20 hover:border-primary/50 hover:text-foreground'}`}
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
+
+                {/* 2-Column Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                    
+                    {/* Left Column: Terminal Widget (Sticky) */}
+                    <div className="lg:col-span-5 lg:sticky lg:top-32 order-2 lg:order-1 perspective-1000">
+                        <TerminalWidget activeProject={activeProject} />
+                        
+                        <div className="mt-8 text-center lg:text-left text-sm text-muted-foreground">
+                            <p className="flex items-center justify-center lg:justify-start gap-2">
+                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                Sistemas operativos. Conexión segura.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Right Column: GitHub Style Project Cards */}
+                    <div className="lg:col-span-7 order-1 lg:order-2">
+                        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <AnimatePresence mode="popLayout">
+                                {filteredProjects.map((project, index) => (
+                                    <GitHubProjectCard 
+                                        key={project.id} 
+                                        project={project} 
+                                        index={index} 
+                                        onHover={setActiveProject} 
+                                    />
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+                        
+                        {filteredProjects.length === 0 && (
+                            <div className="text-center py-20 text-muted-foreground border border-dashed border-primary/20 rounded-xl">
+                                Ningún proyecto coincide con esta etiqueta.
+                            </div>
+                        )}
+                    </div>
+
+                </div>
+            </div>
+
+            {/* Background Decorations */}
+            <div className="absolute top-1/4 -right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-0 -left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+        </section>
+    );
+};
+
+export default ProjectsSection;
