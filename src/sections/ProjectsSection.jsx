@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { GitHubProjectCard } from '../components/GitHubProjectCard';
 import { TerminalWidget } from '../components/TerminalWidget';
 import { supabase } from '../lib/supabaseClient';
@@ -8,6 +9,16 @@ const ProjectsSection = () => {
     const [selectedTag, setSelectedTag] = useState("All");
     const [activeProject, setActiveProject] = useState(null);
     const [projects, setProjects] = useState([]);
+    
+    // Slider State
+    const [colIndex, setColIndex] = useState(0);
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -28,6 +39,34 @@ const ProjectsSection = () => {
         if (selectedTag === "All") return projects;
         return projects.filter(p => (p.hardskills || []).includes(selectedTag));
     }, [selectedTag, projects]);
+
+    // Data Logic: Blocks of 3
+    const projectColumns = useMemo(() => {
+        const cols = [];
+        for (let i = 0; i < filteredProjects.length; i += 3) {
+            cols.push(filteredProjects.slice(i, i + 3));
+        }
+        return cols;
+    }, [filteredProjects]);
+
+    // Resets slider when changing tags
+    useEffect(() => {
+        setColIndex(0);
+    }, [selectedTag]);
+
+    const maxColsVisible = isMobile ? 1 : 2;
+    const maxIndex = Math.max(0, projectColumns.length - maxColsVisible);
+
+    const nextCol = () => setColIndex(prev => Math.min(prev + 1, maxIndex));
+    const prevCol = () => setColIndex(prev => Math.max(prev - 1, 0));
+
+    const getXOffset = () => {
+        if (isMobile) {
+            return `calc(-${colIndex * 100}% - ${colIndex * 24}px)`;
+        } else {
+            return `calc(-${colIndex * 50}% - ${colIndex * 12}px)`;
+        }
+    };
 
     return (
         <section
@@ -83,26 +122,60 @@ const ProjectsSection = () => {
                         </div>
                     </div>
 
-                    {/* Right Column: GitHub Style Project Cards */}
-                    <div className="lg:col-span-7 order-1 lg:order-2">
-                        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <AnimatePresence mode="popLayout">
-                                {filteredProjects.map((project, index) => (
-                                    <GitHubProjectCard 
-                                        key={project.id} 
-                                        project={project} 
-                                        index={index} 
-                                        onHover={setActiveProject} 
-                                    />
-                                ))}
-                            </AnimatePresence>
-                        </motion.div>
+                    {/* Right Column: Sliding Project Cards Grid */}
+                    <div className="lg:col-span-7 order-1 lg:order-2 relative group min-h-[500px]">
                         
-                        {filteredProjects.length === 0 && (
-                            <div className="text-center py-20 text-muted-foreground border border-dashed border-primary/20 rounded-xl">
-                                Ningún proyecto coincide con esta etiqueta.
+                        {/* Desktop Navigation Arrows (Floating) */}
+                        {maxIndex > 0 && (
+                            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-20 flex justify-between pointer-events-none px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <button 
+                                    onClick={prevCol}
+                                    disabled={colIndex === 0}
+                                    className="pointer-events-auto bg-[#0a1220]/90 backdrop-blur-md border border-primary/30 p-2.5 rounded-full text-primary disabled:opacity-0 transition-all hover:bg-primary/20 hover:scale-110 shadow-[0_0_20px_rgba(16,185,129,0.3)] -ml-4"
+                                >
+                                    <ChevronLeft size={28} />
+                                </button>
+                                <button 
+                                    onClick={nextCol}
+                                    disabled={colIndex === maxIndex}
+                                    className="pointer-events-auto bg-[#0a1220]/90 backdrop-blur-md border border-primary/30 p-2.5 rounded-full text-primary disabled:opacity-0 transition-all hover:bg-primary/20 hover:scale-110 shadow-[0_0_20px_rgba(16,185,129,0.3)] -mr-4"
+                                >
+                                    <ChevronRight size={28} />
+                                </button>
                             </div>
                         )}
+
+                        <div className="w-full relative overflow-hidden pb-4">
+                            <motion.div 
+                                className="flex w-full will-change-transform"
+                                style={{ gap: '24px' }}
+                                animate={{ x: getXOffset() }}
+                                transition={{ type: "spring", stiffness: 250, damping: 28, mass: 0.8 }}
+                            >
+                                <AnimatePresence mode="popLayout">
+                                    {projectColumns.length > 0 ? projectColumns.map((col, idx) => (
+                                        <div 
+                                            key={`col-${idx}`} 
+                                            className="flex-shrink-0 flex flex-col gap-6"
+                                            style={{ width: isMobile ? '100%' : 'calc(50% - 12px)' }}
+                                        >
+                                            {col.map((project, pIdx) => (
+                                                <GitHubProjectCard 
+                                                    key={project.id} 
+                                                    project={project} 
+                                                    index={pIdx} 
+                                                    onHover={setActiveProject} 
+                                                />
+                                            ))}
+                                        </div>
+                                    )) : (
+                                        <div className="w-full text-center py-20 text-muted-foreground border border-dashed border-primary/20 rounded-xl">
+                                            Ningún proyecto coincide con esta etiqueta.
+                                        </div>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
+                        </div>
                     </div>
 
                 </div>
