@@ -12,7 +12,6 @@ export const TerminalWidget = ({ activeProject }) => {
 
         setLines([]);
         
-        let currentLine = 0;
         let isCancelled = false;
 
         const renderOutputs = async () => {
@@ -101,7 +100,7 @@ export const TerminalWidget = ({ activeProject }) => {
                 </AnimatePresence>
             </div>
             {/* Custom Scrollbar CSS for this specific terminal */}
-            <style jsx>{`
+            <style>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: #0d1117; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }

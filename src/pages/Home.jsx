@@ -24,12 +24,12 @@ const Home = () => {
             <Suspense fallback={<LoadingFallback />}>
                 <HeroSection />
                 <AboutSection />
-                <SkillsSection />
-                <AnalyticsSection />
                 <ExperienceSection />
                 <EducationSection />
                 <ProjectsSection />
                 <WebsSection />
+                <SkillsSection />
+                <AnalyticsSection />
                 <ContactSection />
             </Suspense>
         </main>

@@ -1,47 +1,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import GradientText from '../components/GradientText';
+import Magnet from '../components/reactbits/Magnet';
+import SplitText from '../components/reactbits/SplitText';
 import { data } from '../lib/data';
 
-// ─── Name split strategy ────────────────────────────────────────────
-// "MATEO CAÑIBANO DOMÍNGUEZ" → mobile: "MATEO", sm: "MATEO CAÑIBANO", lg+: full
-const nameParts  = data.personal.name.split(' ');
-const firstName  = nameParts[0];
-const lastName1  = nameParts[1] ?? '';
-const lastName2  = nameParts.slice(2).join(' ');
-// ───────────────────────────────────────────────────────────────────
-
+// ─── Animation variants ─────────────────────────────────────────────
 const containerVariants = {
     hidden:  { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: {
-            // Reduced delay so role badge is visible almost immediately
-            duration: 0.4,
-            staggerChildren: 0.15,
-            delayChildren: 0.05,
-        },
+        transition: { duration: 0.3, staggerChildren: 0.12, delayChildren: 0.05 },
     },
 };
 
 const itemVariants = {
-    hidden:  { opacity: 0, y: 24, filter: 'blur(6px)' },
+    hidden:  { opacity: 0, y: 20, filter: 'blur(4px)' },
     visible: {
         opacity: 1, y: 0, filter: 'blur(0px)',
-        transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+        transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
     },
 };
 
 const HeroSection = () => {
-    const role    = data.personal.role;
-    const tagline = data.personal.tagline;
+    const { name, role, tagline } = data.personal;
 
     return (
         <section
             id="hero"
             className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-16"
         >
-            {/* ─── Ambient glow orbs (purely decorative, no events) ─── */}
+            {/* ─── Ambient glow orbs ─── */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <motion.div
                     className="absolute w-[600px] h-[600px] rounded-full"
@@ -70,11 +59,10 @@ const HeroSection = () => {
                     initial="hidden"
                     animate="visible"
                 >
-
-                    {/* Role badge — always visible, minimal delay */}
+                    {/* Role badge */}
                     <motion.div
                         variants={itemVariants}
-                        className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full mb-6 backdrop-blur-sm"
+                        className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-8 backdrop-blur-sm"
                         style={{
                             background: 'rgba(16,185,129,0.07)',
                             border: '1px solid rgba(16,185,129,0.2)',
@@ -86,83 +74,72 @@ const HeroSection = () => {
                         </span>
                     </motion.div>
 
-                    {/* H1 — fluid, never overflows viewport ─────────── */}
-                    {/* Desktop: full name on one visual block              */}
-                    {/* Tablet: first name + first surname                 */}
-                    {/* Mobile: first name only — keeps it punchy          */}
+                    {/* H1 — fluid with GradientText */}
                     <motion.h1
                         variants={itemVariants}
-                        className="font-extrabold text-foreground leading-[1.05] mb-5"
+                        className="font-extrabold text-foreground leading-[1.05] mb-6"
                     >
-                        {/* "Hola, soy" sub-label */}
                         <span className="block text-lg sm:text-xl md:text-2xl font-mono font-normal text-muted-foreground/55 tracking-[0.2em] mb-2">
                             Hola, soy
                         </span>
-
-                        {/* Responsive name */}
-                        <span className="text-[clamp(2.4rem,8vw,5.5rem)] leading-none inline-block">
+                        <span className="text-[clamp(2.8rem,9vw,6rem)] leading-none inline-block">
                             <GradientText
                                 colors={['#10b981', '#7c3aed', '#34d399', '#a78bfa', '#10b981']}
                                 animationSpeed={5}
                                 showBorder={false}
                                 className="inline"
                             >
-                                {/* xs / mobile */}
-                                <span className="sm:hidden whitespace-nowrap">{firstName}</span>
-                                {/* sm → lg */}
-                                <span className="hidden sm:inline xl:hidden whitespace-nowrap">
-                                    {firstName} {lastName1}
-                                </span>
-                                {/* xl+ */}
-                                <span className="hidden xl:inline whitespace-nowrap">
-                                    {firstName} {lastName1}{lastName2 ? ` ${lastName2}` : ''}
-                                </span>
+                                {name}
                             </GradientText>
                             <span className="text-primary">.</span>
                         </span>
                     </motion.h1>
 
-                    {/* Tagline */}
-                    <motion.p
-                        variants={itemVariants}
-                        className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed"
-                    >
-                        {tagline}
-                    </motion.p>
+                    {/* Tagline — animated with SplitText from ReactBits */}
+                    <motion.div variants={itemVariants} className="mb-12">
+                        <SplitText
+                            text={tagline}
+                            splitBy="words"
+                            delay={60}
+                            duration={0.5}
+                            from={{ opacity: 0, y: 15, filter: 'blur(3px)' }}
+                            to={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed"
+                            tag="p"
+                        />
+                    </motion.div>
 
-                    {/* CTA — z-30 ensures it sits above every overlay */}
-                    <motion.a
-                        href="#proyectos"
-                        variants={itemVariants}
-                        className="relative z-30 inline-flex items-center gap-2 py-3.5 px-9 text-base sm:text-lg font-bold rounded-full
-                                   bg-gradient-to-r from-primary to-emerald-400 text-primary-foreground
-                                   shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40
-                                   transition-shadow duration-300 cursor-pointer select-none"
-                        whileHover={{ scale: 1.05, y: -3 }}
-                        whileTap={{ scale: 0.96 }}
-                        onClick={(e) => {
-                            // Smooth scroll fallback for browsers that don't support anchor nav
-                            e.preventDefault();
-                            document.getElementById('proyectos')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                    >
-                        Ver Proyectos
-                        <motion.span
-                            className="inline-block"
-                            animate={{ x: [0, 5, 0] }}
-                            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                        >
-                            →
-                        </motion.span>
-                    </motion.a>
+                    {/* CTA — Magnet effect from ReactBits + guaranteed clickability */}
+                    <motion.div variants={itemVariants} className="relative z-30">
+                        <Magnet padding={60} magnetStrength={3}>
+                            <button
+                                onClick={() => {
+                                    document.getElementById('proyectos')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className="inline-flex items-center gap-2 py-3.5 px-10 text-base sm:text-lg font-bold rounded-full
+                                           bg-gradient-to-r from-primary to-emerald-400 text-primary-foreground
+                                           shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40
+                                           transition-all duration-300 cursor-pointer select-none
+                                           hover:brightness-110 active:scale-95"
+                                aria-label="Ver sección de proyectos"
+                            >
+                                Ver Proyectos
+                                <motion.span
+                                    className="inline-block"
+                                    animate={{ x: [0, 5, 0] }}
+                                    transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    →
+                                </motion.span>
+                            </button>
+                        </Magnet>
+                    </motion.div>
 
                 </motion.div>
             </div>
 
-            {/* ─── Bottom gradient — DECORATIVE ONLY, never blocks events ─── */}
-            <div
-                className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#06090f] to-transparent z-10 pointer-events-none"
-            />
+            {/* Bottom gradient — NEVER blocks events */}
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#06090f] to-transparent z-10 pointer-events-none" />
         </section>
     );
 };

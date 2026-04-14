@@ -49,11 +49,6 @@ const ProjectsSection = () => {
         return cols;
     }, [filteredProjects]);
 
-    // Resets slider when changing tags
-    useEffect(() => {
-        setColIndex(0);
-    }, [selectedTag]);
-
     const maxColsVisible = isMobile ? 1 : 2;
     const maxIndex = Math.max(0, projectColumns.length - maxColsVisible);
 
@@ -96,7 +91,10 @@ const ProjectsSection = () => {
                     {allTags.map((tag) => (
                         <button
                             key={tag}
-                            onClick={() => setSelectedTag(tag)}
+                            onClick={() => {
+                                setSelectedTag(tag);
+                                setColIndex(0);
+                            }}
                             className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300
                                        ${selectedTag === tag 
                                         ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(16,185,129,0.4)] border-primary' 
@@ -154,8 +152,12 @@ const ProjectsSection = () => {
                             >
                                 <AnimatePresence mode="popLayout">
                                     {projectColumns.length > 0 ? projectColumns.map((col, idx) => (
-                                        <div 
-                                            key={`col-${idx}`} 
+                                        <motion.div 
+                                            key={`col-${idx}-${selectedTag}`} 
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.95 }}
+                                            transition={{ duration: 0.3 }}
                                             className="flex-shrink-0 flex flex-col gap-6"
                                             style={{ width: isMobile ? '100%' : 'calc(50% - 12px)' }}
                                         >
@@ -167,11 +169,16 @@ const ProjectsSection = () => {
                                                     onHover={setActiveProject} 
                                                 />
                                             ))}
-                                        </div>
+                                        </motion.div>
                                     )) : (
-                                        <div className="w-full text-center py-20 text-muted-foreground border border-dashed border-primary/20 rounded-xl">
+                                        <motion.div 
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="w-full text-center py-20 text-muted-foreground border border-dashed border-primary/20 rounded-xl"
+                                        >
                                             Ningún proyecto coincide con esta etiqueta.
-                                        </div>
+                                        </motion.div>
                                     )}
                                 </AnimatePresence>
                             </motion.div>

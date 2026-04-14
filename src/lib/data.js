@@ -1,6 +1,6 @@
 export const data = {
     personal: {
-        name: "MATEO CAÑIBANO DOMÍNGUEZ",
+        name: "MATEO CAÑIBANO",
         role: "Data-Driven Web Developer & Growth Analyst",
         tagline: "Building digital futures through code, strategy, and data insights.",
         aboutMe: "Gracias a la planificación y la estrategia he conseguido escalar negocios de diferentes sectores. Identifico oportunidades que potencien los embudos de captación y de desarrollo de negocio. Mi valor reside en unir la tecnología con la analítica para impulsar el crecimiento.",

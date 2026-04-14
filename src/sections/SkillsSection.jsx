@@ -10,7 +10,7 @@ import {
     SiPython, SiDocker, SiGithub, SiFigma, SiWordpress,
     SiShopify, SiGoogleanalytics, SiGoogleads, SiHubspot,
     SiAmazonwebservices, SiVite, SiJavascript, SiHtml5,
-    SiCss3, SiMarkdown, SiNotionSo,
+    SiCss3, SiMarkdown, SiNotion,
 } from 'react-icons/si';
 import { FaSearch, FaCode, FaChartBar, FaDatabase, FaBolt, FaChartLine, FaStar } from 'react-icons/fa';
 
@@ -45,7 +45,7 @@ const ICON_MAP = [
     { match: /html/i,           Icon: SiHtml5,           color: '#E34F26' },
     { match: /css/i,            Icon: SiCss3,            color: '#1572B6' },
     { match: /markdown/i,       Icon: SiMarkdown,        color: '#ffffff' },
-    { match: /notion/i,         Icon: SiNotionSo,        color: '#ffffff' },
+    { match: /notion/i,         Icon: SiNotion,          color: '#ffffff' },
     { match: /seo/i,            Icon: FaSearch,          color: '#10b981' },
     { match: /excel|power quer|dashboard|chart|analytic|data/i,
                                 Icon: FaChartBar,         color: '#10b981' },
