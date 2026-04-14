@@ -79,10 +79,10 @@ const HeroSection = () => {
                         variants={itemVariants}
                         className="font-extrabold text-foreground leading-[1.05] mb-6"
                     >
-                        <span className="block text-lg sm:text-xl md:text-2xl font-mono font-normal text-muted-foreground/55 tracking-[0.2em] mb-2">
+                        <span className="block text-lg sm:text-xl md:text-2xl font-mono font-normal text-muted-foreground/55 tracking-[0.2em] mb-4">
                             Hola, soy
                         </span>
-                        <span className="text-[clamp(2.8rem,9vw,6rem)] leading-none inline-block">
+                        <span className="text-[clamp(2.8rem,9vw,6rem)] leading-tight inline-block">
                             <GradientText
                                 colors={['#10b981', '#7c3aed', '#34d399', '#a78bfa', '#10b981']}
                                 animationSpeed={5}
